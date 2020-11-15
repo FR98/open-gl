@@ -26,6 +26,13 @@ while isPlaying:
     if keys[pygame.K_s]:
         cubeZ += 2 * deltaTime
 
+    if keys[pygame.K_r]:
+        r.roll()
+    if keys[pygame.K_p]:
+        r.pitch()
+    if keys[pygame.K_y]:
+        r.yaw()
+
     for ev in pygame.event.get():
         if ev.type == pygame.QUIT:
             isPlaying = False

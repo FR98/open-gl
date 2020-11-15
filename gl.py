@@ -47,6 +47,9 @@ class Renderer(object):
         # Perspective Projection Matrix
         self.projection = glm.perspective(glm.radians(60), self.width / self.height, 0.1, 1000)
         self.cubePos = glm.vec3(0,0,0)
+        self.__roll = 0
+        self.__pitch = 0
+        self.__yaw = 0
 
     def wireframeMode(self):
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
@@ -56,6 +59,15 @@ class Renderer(object):
 
     def translateCube(self, x, y, z):
         self.cubePos = glm.vec3(x,y,z)
+
+    def roll(self):
+        self.__roll += 5
+
+    def pitch(self):
+        self.__pitch += 5
+
+    def yaw(self):
+        self.__yaw += 5
 
     def setShaders(self, vertexShader, fragShader):
         if vertexShader is not None or fragShader is not None:
@@ -91,9 +103,9 @@ class Renderer(object):
         i = glm.mat4(1)
         # Model/Object matrix: translate * rotate * scale
         translate = glm.translate(i, self.cubePos)
-        pitch = glm.rotate(i, glm.radians( 0 ), glm.vec3(1,0,0))
-        yaw   = glm.rotate(i, glm.radians( 0 ), glm.vec3(0,1,0))
-        roll  = glm.rotate(i, glm.radians( 0 ), glm.vec3(0,0,1))
+        pitch = glm.rotate(i, glm.radians( self.__pitch ), glm.vec3(1,0,0))
+        yaw   = glm.rotate(i, glm.radians( self.__yaw ), glm.vec3(0,1,0))
+        roll  = glm.rotate(i, glm.radians( self.__roll ), glm.vec3(0,0,1))
         rotate = pitch * yaw * roll
         scale = glm.scale(i, glm.vec3(1,1,1))
         model = translate * rotate * scale
