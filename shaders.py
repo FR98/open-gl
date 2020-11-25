@@ -3,19 +3,27 @@
 vertex_shader = """
 #version 460
 
-layout (location = 0) in vec3 position;
-layout (location = 1) in vec3 cColor;
-
-out vec3 miColor;
+layout (location = 0) in vec4 pos;
+layout (location = 1) in vec4 normal;
+layout (location = 2) in vec2 texcoords;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform vec4 color;
+uniform vec4 light;
+
+out vec4 vertexColor;
+out vec2 vertexTexcoords;
+
 void main()
 {
-    gl_Position = projection * view * model * vec4(position.x, position.y, position.z, 1.0);
-    miColor = cColor;
+    float intensity = dot(model * normal, normalize(light - pos));
+
+    gl_Position = projection * view * model * pos;
+    vertexColor = color * intensity;
+    vertexTexcoords = texcoords;
 }
 """
 
@@ -23,12 +31,15 @@ void main()
 fragment_shader ="""
 #version 460
 
-layout(location = 0) out vec4 fragColor;
+layout(location = 0) out vec4 diffuseColor;
 
-in vec3 miColor;
+in vec4 vertexColor;
+in vec2 vertexTexcoords;
+
+uniform sampler2D tex;
 
 void main()
 {
-    fragColor = vec4(miColor, 1);
+    diffuseColor = vertexColor * texture(tex, vertexTexcoords);
 }
 """
