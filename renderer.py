@@ -12,16 +12,21 @@ screenSize = (960, 540)
 
 screen = pygame.display.set_mode(screenSize, DOUBLEBUF | OPENGL)
 r = Renderer(screen)
-r.camPosition.z = 500
-r.camPosition.x = 5
+r.camPosition.z = 3
+r.pointLight.x = 5
 
 r.setShaders(shaders.vertex_shader, shaders.fragment_shader)
-model1 = Model("assets/dilophosaurus/dilophosaurus.obj", "assets/dilophosaurus/skin.bmp", glm.vec3(1, 1, 1))
+model1 = Model("assets/sign/objSign.obj", "assets/Face/model.bmp", glm.vec3(0.25, 0.25, 0.25))
 r.modelList.append(model1)
-# model2 = Model("assets/Biplane/OBJ/HiPoly/Biplane.obj", "assets/Biplane/Textures/SidesMap_01.bmp", glm.vec3(0.25, 0.25, 0.25))
-# r.modelList.append(model2)
-# model3 = Model("assets/Face/model.obj", "assets/Face/model.bmp", glm.vec3(0.25, 0.25, 0.25))
-# r.modelList.append(model3)
+
+model2 = Model("assets/sign/Stool.obj", "assets/Face/model.bmp", glm.vec3(0.025, 0.025, 0.025))
+r.modelList.append(model2)
+
+model3 = Model("assets/beriev/BerievA50.obj", "assets/beriev/Beriev_2048.bmp", glm.vec3(0.01, 0.01, 0.01))
+r.modelList.append(model3)
+
+model3 = Model("assets/f16/F-16D.obj", "assets/f16/Albedo.bmp", glm.vec3(0.25, 0.25, 0.25))
+r.modelList.append(model3)
 
 isPlaying = True
 while isPlaying:

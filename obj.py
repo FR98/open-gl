@@ -1,7 +1,7 @@
 class Obj(object):
     def __init__(self, filename):
         with open(filename, "r") as file:
-            self.lines = file.read().split()
+            self.lines = file.read().splitlines()
         
         self.vertices = []
         self.normals = []
@@ -16,7 +16,7 @@ class Obj(object):
                     prefix, value = line.split(" ", 1)
                 except:
                     continue
-                
+
                 if prefix == "v":
                     self.vertices.append(list(map(float, value.split(" "))))
                 elif prefix == "vn":

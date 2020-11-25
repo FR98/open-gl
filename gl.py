@@ -18,15 +18,18 @@ class Model(object):
         self.rotation = glm.vec3(0, 0, 0)
         self.scale = scale
 
-    def getMatrix(self):
+    def getMatrix(self, camera_pos, projection, camera_rot):
         i = glm.mat4(1)
-        translate = glm.translate(i, self.position)
+        translate = glm.translate(i, glm.vec3(0, 0, 0))
         pitch = glm.rotate(i, glm.radians(self.rotation.x), glm.vec3(1, 0, 0))
         yaw = glm.rotate(i, glm.radians(self.rotation.y), glm.vec3(0, 1, 0))
         roll = glm.rotate(i, glm.radians(self.rotation.z), glm.vec3(0, 0, 1))
         rotate = pitch * yaw * roll
         scale = glm.scale(i, self.scale)
-        return translate * rotate * scale
+
+        model_pos = translate * rotate * scale
+        view = glm.lookAt(camera_pos, camera_rot, glm.vec3(0, 1, 0))
+        return projection * view * model_pos
     
     def createVertBuffer(self):
         buffer = []
@@ -146,7 +149,7 @@ class Renderer(object):
         glEnableVertexAttribArray(1)
 
     def render(self):
-        glClearColor(0.2, 0.2, 0.2, 1)
+        glClearColor(0.25, 0.5, 0.5, 1)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
 
         if self.active_shader:
@@ -156,5 +159,5 @@ class Renderer(object):
             glUniform4f(glGetUniformLocation(self.active_shader, "color"), 1, 1, 1, 1)
         
         if self.active_shader:
-            glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "model"), 1, GL_FALSE, glm.value_ptr(self.modelList[self.activeModelIndex].getMatrix()))
+            glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "model"), 1, GL_FALSE, glm.value_ptr(self.modelList[self.activeModelIndex].getMatrix(self.camPosition, self.projection, self.camRotation)))
             self.modelList[self.activeModelIndex].renderInScene()
