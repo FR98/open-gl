@@ -6,6 +6,8 @@ from gl import Renderer, Model
 
 
 deltaTime = 0.0
+all_shaders = [eval("shaders." + shader_name) for shader_name in dir(shaders) if not shader_name.startswith("__") and shader_name != "vertex_shader"]
+actual_shader_index = 0
 pygame.init()
 clock = pygame.time.Clock()
 screenSize = (960, 540)
@@ -13,7 +15,7 @@ screenSize = (960, 540)
 screen = pygame.display.set_mode(screenSize, DOUBLEBUF | OPENGL)
 r = Renderer(screen)
 r.camPosition.z = 3
-r.pointLight.x = 5
+r.pointLight.x = 10
 
 r.setShaders(shaders.vertex_shader, shaders.fragment_shader)
 model1 = Model("assets/sign/objSign.obj", "assets/Face/model.bmp", glm.vec3(0.25, 0.25, 0.25))
@@ -57,6 +59,9 @@ while isPlaying:
                 r.wireframeMode()
             elif ev.key == pygame.K_SPACE:
                 r.activeModelIndex = (r.activeModelIndex + 1) % len(r.modelList)
+            elif ev.key == pygame.K_5:
+                actual_shader_index = (actual_shader_index + 1) % len(all_shaders)
+                r.setShaders(shaders.vertex_shader, all_shaders[actual_shader_index])
             elif ev.key == pygame.K_ESCAPE:
                 isPlaying = False
         elif ev.type == pygame.MOUSEBUTTONDOWN or ev.type == pygame.MOUSEBUTTONUP:

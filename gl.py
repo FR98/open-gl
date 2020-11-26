@@ -83,6 +83,7 @@ class Renderer(object):
 
         self.modelList = []
         self.activeModelIndex = 0
+        self.active_shader = None
         self.camPosition = glm.vec3(0, 0, 0)
         self.camRotation = glm.vec3(0, 0, 0)
         self.projection = glm.perspective(glm.radians(60), self.width / self.height, 0.1, 1000)
@@ -128,11 +129,12 @@ class Renderer(object):
     def yaw(self):
         self.__yaw += 5
 
-    def setShaders(self, vertexShader, fragShader):
-        if vertexShader is not None or fragShader is not None:
+    def setShaders(self, vertexShader, shader):
+        if vertexShader is not None or shader is not None:
             self.active_shader = compileProgram(
                 compileShader(vertexShader, GL_VERTEX_SHADER),
-                compileShader(fragShader, GL_FRAGMENT_SHADER)
+                compileShader(shader, GL_FRAGMENT_SHADER),
+                validate=False
             )
         else:
             self.active_shader = None
@@ -164,7 +166,5 @@ class Renderer(object):
             glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "projection"), 1, GL_FALSE, glm.value_ptr( self.projection ))
             glUniform4f(glGetUniformLocation(self.active_shader, "light"), self.pointLight.x, self.pointLight.y, self.pointLight.z, self.pointLight.w)
             glUniform4f(glGetUniformLocation(self.active_shader, "color"), 1, 1, 1, 1)
-        
-        if self.active_shader:
             glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "model"), 1, GL_FALSE, glm.value_ptr(self.modelList[self.activeModelIndex].getMatrix(self.camPosition, self.projection, self.camRotation)))
             self.modelList[self.activeModelIndex].renderInScene()
