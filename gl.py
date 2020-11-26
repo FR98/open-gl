@@ -1,4 +1,5 @@
 import glm
+import math
 import pygame
 import numpy as np
 from obj import Obj
@@ -26,11 +27,9 @@ class Model(object):
         roll = glm.rotate(i, glm.radians(self.rotation.z), glm.vec3(0, 0, 1))
         rotate = pitch * yaw * roll
         scale = glm.scale(i, self.scale)
+        view = glm.lookAt(camera_pos, self.position, glm.vec3(0, 1, 0))
+        return translate * rotate * scale
 
-        model_pos = translate * rotate * scale
-        view = glm.lookAt(camera_pos, camera_rot, glm.vec3(0, 1, 0))
-        return projection * view * model_pos
-    
     def createVertBuffer(self):
         buffer = []
 
@@ -88,6 +87,8 @@ class Renderer(object):
         self.camRotation = glm.vec3(0, 0, 0)
         self.projection = glm.perspective(glm.radians(60), self.width / self.height, 0.1, 1000)
         self.pointLight = glm.vec4(0, 0, 0, 0)
+        self.angle = 90
+        self.viewMatrix = self.getViewMatrix()
 
         self.__roll = 0
         self.__pitch = 0
@@ -102,6 +103,12 @@ class Renderer(object):
         camRotate = camPitch * camYaw * camRoll
 
         return glm.inverse(camTranslate * camRotate)
+
+    def cameraView(self):
+        r = (self.camPosition.x ** 2 + self.camPosition.z ** 2) ** 0.5
+        self.camPosition.x = r * math.cos(self.angle * math.pi / 180)
+        self.camPosition.z = r * math.sin(self.angle * math.pi / 180)
+        self.viewMatrix = glm.lookAt(self.camPosition, self.modelList[self.activeModelIndex].position, glm.vec3(0, 1, 0))
 
     def wireframeMode(self):
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
@@ -153,7 +160,7 @@ class Renderer(object):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
 
         if self.active_shader:
-            glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "view"), 1, GL_FALSE, glm.value_ptr( self.getViewMatrix() ))
+            glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "view"), 1, GL_FALSE, glm.value_ptr( self.viewMatrix ))
             glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "projection"), 1, GL_FALSE, glm.value_ptr( self.projection ))
             glUniform4f(glGetUniformLocation(self.active_shader, "light"), self.pointLight.x, self.pointLight.y, self.pointLight.z, self.pointLight.w)
             glUniform4f(glGetUniformLocation(self.active_shader, "color"), 1, 1, 1, 1)

@@ -32,13 +32,13 @@ isPlaying = True
 while isPlaying:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
-        r.camPosition.x += 1 * deltaTime
+        r.angle -= 75 * deltaTime
     if keys[pygame.K_d]:
-        r.camPosition.x -= 1 * deltaTime
+        r.angle += 75 * deltaTime
     if keys[pygame.K_w]:
-        r.camPosition.z -= 1 * deltaTime
+        r.camPosition.y -= 10 * deltaTime
     if keys[pygame.K_s]:
-        r.camPosition.z += 1 * deltaTime
+        r.camPosition.y += 10 * deltaTime
 
     if keys[pygame.K_r]:
         r.roll()
@@ -59,7 +59,15 @@ while isPlaying:
                 r.activeModelIndex = (r.activeModelIndex + 1) % len(r.modelList)
             elif ev.key == pygame.K_ESCAPE:
                 isPlaying = False
+        elif ev.type == pygame.MOUSEBUTTONDOWN or ev.type == pygame.MOUSEBUTTONUP:
+            if ev.button == 4:
+                if r.camPosition.z >= 0:
+                    r.camPosition.z -= 10 * deltaTime
+            if ev.button == 5:
+                if r.camPosition.z <= 100:
+                    r.camPosition.z += 10 * deltaTime
 
+    r.cameraView()
     r.render()
     pygame.display.flip()
     clock.tick(60)
