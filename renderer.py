@@ -18,13 +18,13 @@ r.camPosition.z = 3
 r.pointLight.x = 10
 
 r.setShaders(shaders.vertex_shader, shaders.fragment_shader)
-model1 = Model("assets/sign/objSign.obj", "assets/Face/model.bmp", glm.vec3(0.25, 0.25, 0.25))
+model1 = Model("assets/beriev/BerievA50.obj", "assets/beriev/Beriev_2048.bmp", glm.vec3(0.01, 0.01, 0.01))
 r.modelList.append(model1)
 
 model2 = Model("assets/sign/Stool.obj", "assets/Face/model.bmp", glm.vec3(0.025, 0.025, 0.025))
 r.modelList.append(model2)
 
-model3 = Model("assets/beriev/BerievA50.obj", "assets/beriev/Beriev_2048.bmp", glm.vec3(0.01, 0.01, 0.01))
+model3 = Model("assets/sign/objSign.obj", "assets/Face/model.bmp", glm.vec3(0.25, 0.25, 0.25))
 r.modelList.append(model3)
 
 model3 = Model("assets/f16/F-16D.obj", "assets/f16/Albedo.bmp", glm.vec3(0.25, 0.25, 0.25))
